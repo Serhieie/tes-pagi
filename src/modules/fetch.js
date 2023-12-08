@@ -9,6 +9,7 @@ const back = document.querySelector('.back');
 
 let isFetching = false;
 let lastTotalHits = 0;
+let perPage = 8;
 
 if (!COMMONS.currentPage) {
   forward.setAttribute('disabled', true);
@@ -17,7 +18,7 @@ if (!COMMONS.currentPage) {
 
 footerContainer.addEventListener('click', async function (event) {
   const selectedPage = parseInt(event.target.textContent);
-  let lastPage = Math.ceil(lastTotalHits / 9);
+  let lastPage = Math.ceil(lastTotalHits / perPage);
   if (event.target.classList.contains('pagination_button')) {
     if (event.target.classList.contains('back')) {
       if (COMMONS.currentPage === 1) {
@@ -80,7 +81,7 @@ function createPaginationMarkup(data, pagination, page) {
       paginationHTML += createEllipsisItem();
     }
 
-    for (let i = startPage; i <= endPage; i++) {
+    for (let i = startPage; i <= endPage; i += 1) {
       paginationHTML += createPaginationItem(i, i === page);
     }
 
@@ -115,7 +116,7 @@ async function getImages(page) {
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: 'true',
-    per_page: 9,
+    per_page: perPage,
   });
   try {
     showLoader();
@@ -134,11 +135,11 @@ function handleResponse(response) {
     return;
   }
 
-  if (response.data.totalHits <= COMMONS.currentPage * 9) {
+  if (response.data.totalHits <= COMMONS.currentPage * perPage) {
     HELPERS.lastPhotos();
   }
 
-  createPaginationMarkup(response.data, 9, COMMONS.currentPage);
+  createPaginationMarkup(response.data, perPage, COMMONS.currentPage);
   createMarkup(response.data);
   hideLoader();
   updatePagination();
@@ -167,12 +168,12 @@ function updatePagination() {
   }
 
   // Використання збережених totalHits
-  const lastPage = Math.ceil(lastTotalHits / 9);
+  const lastPage = Math.ceil(lastTotalHits / perPage);
 
   if (COMMONS.currentPage === lastPage) {
-    forward.setAttribute('disabled', true);
+    return forward.setAttribute('disabled', true);
   } else {
-    forward.removeAttribute('disabled');
+    return forward.removeAttribute('disabled');
   }
 }
 
