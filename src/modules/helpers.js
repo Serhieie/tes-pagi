@@ -1,4 +1,3 @@
-import { observer } from './observer.js';
 import COMMONS from '../modules/commons.js';
 import Notiflix from 'notiflix';
 
@@ -13,23 +12,23 @@ function noPhotoMsg() {
 }
 
 function lastPhotos() {
-  hideLoader();
+  // hideLoader();
   Notiflix.Notify.success(`Це останні фото за цим пошуком!`);
 }
 
 function onError(error) {
-  if (error.response.data === '[ERROR 400] "page" is out of valid range.') {
-    noPhotoMsg();
-    return observer.unobserve(COMMONS.guard);
-  }
-  hideLoader();
+  // if (error.response.data === '[ERROR 400] "page" is out of valid range.') {
+  //   noPhotoMsg();
+  //   return;
+  // }
+  // hideLoader();
   Notiflix.Notify.failure(`Загрузка неможлива, ${error} 🤷‍♂️`);
-  return observer.unobserve(COMMONS.guard);
+  return;
 }
 
 function emptyResponse() {
   noPhotoMsg();
-  return observer.unobserve(COMMONS.guard);
+  return;
 }
 function successResponse(response) {
   Notiflix.Notify.success(
@@ -52,25 +51,26 @@ function isSearchQueryValid() {
   return true;
 }
 
-function resetPageAndContainer() {
-  COMMONS.currentPage = 0;
-  COMMONS.container.innerHTML = '';
-}
+// function resetPageAndContainer() {
+//   COMMONS.currentPage = 0;
+//   COMMONS.container.innerHTML = '';
+// }
 
-function showLoader() {
-  COMMONS.loader.classList.remove('visually-hidden');
-}
-function hideLoader() {
-  COMMONS.loader.classList.add('visually-hidden');
-}
+// function showLoader() {
+//   COMMONS.loader.classList.remove('visually-hidden');
+//   // forward.setAttribute('disabled', true);
+//   // back.setAttribute('disabled', true);
+// }
+// function hideLoader() {
+//   COMMONS.loader.classList.add('visually-hidden');
+//   // forward.setAttribute('disabled', false);
+//   // back.setAttribute('disabled', false);
+// }
 
 export default {
   onError,
   successResponse,
   emptyResponse,
   isSearchQueryValid,
-  resetPageAndContainer,
   lastPhotos,
-  showLoader,
-  hideLoader,
 };
