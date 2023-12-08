@@ -41,6 +41,7 @@ footerContainer.addEventListener('click', async function (event) {
   }
 
   if (event.target.classList.contains('pagi_item_span')) {
+    if (event.target.textContent === '...') return;
     if (selectedPage === COMMONS.currentPage) {
       return;
     }
