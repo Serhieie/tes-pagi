@@ -34,7 +34,8 @@ export function createMarkup(data) {
  `
     )
     .join('');
-  COMMONS.container.insertAdjacentHTML('beforeend', markup);
+  // COMMONS.container.insertAdjacentHTML('beforeend', markup);
+  COMMONS.container.innerHTML = markup;
 
   let gallery = new SimpleLightbox('.simplelightbox-link', {
     overlayOpacity: 1,

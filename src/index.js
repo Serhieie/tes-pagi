@@ -7,7 +7,7 @@ import { getImages } from './modules/fetch.js';
 COMMONS.form.addEventListener('submit', onSubmit);
 
 function onSubmit(evt) {
-  COMMONS.currentPage += 1;
+  // COMMONS.currentPage += 1;
   evt.preventDefault();
   if (!HELPERS.isSearchQueryValid()) {
     return;

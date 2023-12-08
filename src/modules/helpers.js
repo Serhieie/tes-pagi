@@ -2,7 +2,7 @@ import COMMONS from '../modules/commons.js';
 import Notiflix from 'notiflix';
 
 function noPhotoMsg() {
-  hideLoader();
+  // hideLoader();
   Notiflix.Notify.failure(
     `Немає фото по даному запиту. Спробуйте знайти щось інше. `
   );

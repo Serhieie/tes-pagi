@@ -7,6 +7,7 @@ const footerContainer = document.querySelector('.footer_container');
 const forward = document.querySelector('.forward');
 const back = document.querySelector('.back');
 
+let isFetching = false;
 let lastTotalHits = 0;
 
 if (!COMMONS.currentPage) {
@@ -74,7 +75,7 @@ function createPaginationMarkup(data, pagination, page) {
       }
     }
 
-    if (startPage > 1) {
+    if (startPage >= 2) {
       paginationHTML += createPaginationItem(1, page === 1);
       paginationHTML += createEllipsisItem();
     }
@@ -94,7 +95,8 @@ function createPaginationMarkup(data, pagination, page) {
 
 function createPaginationItem(pageNumber, isActive) {
   const activeClass = isActive ? ' isActive' : '';
-  return `<li class="pagi_item${activeClass}"><span class="pagi_item_span">${pageNumber}</span></li>`;
+  const paddingChange = COMMONS.currentPage >= 10 ? 'py' : '';
+  return `<li class="pagi_item${activeClass} "><span class="pagi_item_span ${paddingChange}">${pageNumber}</span></li>`;
 }
 
 function createEllipsisItem() {
@@ -102,6 +104,9 @@ function createEllipsisItem() {
 }
 
 async function getImages(page) {
+  if (isFetching) {
+    return;
+  }
   const input = COMMONS.form.elements['searchQuery'];
   const inputValue = input.value;
   const params = new URLSearchParams({
@@ -129,17 +134,14 @@ function handleResponse(response) {
     return;
   }
 
-  if (response.status === 200) {
-    HELPERS.successResponse(response);
-  }
-
-  if (response.data.totalHits <= COMMONS.currentPage * 40) {
+  if (response.data.totalHits <= COMMONS.currentPage * 9) {
     HELPERS.lastPhotos();
   }
 
   createPaginationMarkup(response.data, 9, COMMONS.currentPage);
   createMarkup(response.data);
   hideLoader();
+  updatePagination();
 }
 
 function fetchData(page, params) {
@@ -158,14 +160,14 @@ function updatePagination() {
   });
 
   // Дізейбл кнопки назад, якщо сторінка перша
-  if (COMMONS.currentPage === 1) {
+  if (COMMONS.currentPage <= 1) {
     back.setAttribute('disabled', true);
   } else {
     back.removeAttribute('disabled');
   }
 
   // Використання збережених totalHits
-  const lastPage = Math.ceil(lastTotalHits / 40);
+  const lastPage = Math.ceil(lastTotalHits / 9);
 
   if (COMMONS.currentPage === lastPage) {
     forward.setAttribute('disabled', true);
@@ -181,12 +183,10 @@ function resetPageAndContainer() {
 
 function showLoader() {
   COMMONS.loader.classList.remove('visually-hidden');
-  // forward.setAttribute('disabled', false);
-  // back.setAttribute('disabled', false);
+  isFetching = true;
 }
 function hideLoader() {
   COMMONS.loader.classList.add('visually-hidden');
-  // forward.setAttribute('disabled', true);
-  // back.setAttribute('disabled', true);
+  isFetching = false;
 }
 export { getImages, resetPageAndContainer };
